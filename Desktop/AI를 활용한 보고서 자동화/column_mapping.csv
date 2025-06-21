@@ -1,0 +1,10 @@
+원본컬럼명,한글컬럼명
+G/L Account,계정코드
+Account,계정코드
+GL Account,계정코드
+Account Name,계정명
+G/L Account Name,계정명
+Debit,차변
+Credit,대변
+Balance,잔액
+Amount,금액

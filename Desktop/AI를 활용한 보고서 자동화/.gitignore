@@ -1,0 +1,25 @@
+# 테스트 출력 파일들
+test_reports*/
+*_테스트결과.xlsx
+
+# Excel 임시 파일들
+~$*.xlsx
+~$*.xls
+
+# Python 캐시
+__pycache__/
+*.pyc
+*.pyo
+
+# 로그 파일
+*.log
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# 샘플 데이터 (실제 운영시 제외)
+*샘플*.xlsx

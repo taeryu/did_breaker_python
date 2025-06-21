@@ -1,0 +1,249 @@
+SAP GUI 연동 월마감 자동화 시스템 - 상세 사용법
+🎯 시스템 개요
+기존 SAP GUI 자동화와 Excel 템플릿을 활용하여 월마감 보고서를 자동 생성하는 시스템입니다.
+전체 프로세스:
+SAP GUI 자동화 → 시산표 다운로드 → 계정 분류 → Excel 템플릿에 값 입력 → 완성된 보고서
+
+📁 파일 구조 준비
+1. 필수 폴더 생성
+프로젝트 폴더/
+├── main.py                     # 메인 실행 파일
+├── downloads/                  # SAP 다운로드 폴더
+├── reports/                    # 최종 보고서 출력 폴더
+├── templates/                  # Excel 템플릿 및 매핑 파일
+│   ├── 계정과목매핑표.xlsx      # 계정 분류용
+│   ├── 셀매핑.xlsx             # 셀 위치 매핑용
+│   └── 경영실적보고서_템플릿.xlsx  # Excel 보고서 템플릿
+└── your_sap_automation.py     # 기존 SAP 자동화 모듈
+2. 기존 SAP 자동화 모듈 연결
+python# your_sap_automation.py 예시
+class SAPAutomation:
+    def __init__(self):
+        self.session = session.GuiScriptEngine()
+    
+    def enter_tcode(self, tcode):
+        """트랜잭션 코드 실행"""
+        self.session.findById("wnd[0]/tbar[0]/okcd").text = tcode
+        self.session.findById("wnd[0]").sendVKey(0)
+    
+    def find(self, element_id):
+        """화면 요소 찾기"""
+        return self.session.findById(element_id)
+    
+    def execute(self):
+        """실행 (F8)"""
+        self.session.findById("wnd[0]").sendVKey(8)
+    
+    def export_to_excel(self, filepath):
+        """Excel로 내보내기"""
+        # SAP GUI에서 Excel 내보내기 구현
+        pass
+
+📊 Excel 파일 설정
+1. 계정과목매핑표.xlsx 준비
+목적: SAP 계정코드를 보고서용 계정명으로 분류
+계정코드계정명보고서계정명재무제표구분대분류표시순서4000제품매출액매출액IS매출14010상품매출액매출액IS매출15000제품매출원가매출원가IS원가26100급여급여IS판관비36110상여금급여IS판관비31100현금현금및현금성자산BS자산12100매입채무매입채무BS부채33100자본금자본금BS자본5
+컬럼 설명:
+
+계정코드: SAP의 4자리 계정코드
+계정명: SAP에서 사용하는 계정명
+보고서계정명: 보고서에 표시될 통합 계정명 (여러 계정이 하나로 합쳐짐)
+재무제표구분: IS(손익계산서) 또는 BS(재무상태표)
+대분류: 회계 대분류 (매출, 원가, 판관비, 자산, 부채, 자본)
+표시순서: 보고서 내 표시 순서
+
+2. 셀매핑.xlsx 설정
+목적: 계산된 금액이 들어갈 Excel 셀 위치 지정
+자동 생성 방법:
+python# 셀매핑 파일 생성 코드 실행
+python create_cell_mapping_excel.py
+수동 설정 예시:
+셀매핑 시트:
+시트명섹션계정명셀주소데이터소스제목셀제목템플릿경영실적요약당월데이터매출액B5ISA1{year}년 {month}월 경영실적요약경영실적요약당월데이터매출원가B6IS경영실적요약전년동월데이터매출액C5IS반반장표판관비상세급여B10IS재무상태표유동자산현금및현금성자산B5BSA1{year}년 {month}월말 재무상태표
+컬럼 설명:
+
+시트명: Excel 템플릿의 실제 시트명과 정확히 일치
+섹션: 데이터 그룹 (당월데이터, 전년동월데이터, 판관비상세 등)
+계정명: 계정과목매핑표의 '보고서계정명'과 정확히 일치
+셀주소: 값이 입력될 Excel 셀 (B5, C10 등)
+데이터소스: IS(손익계산서) 또는 BS(재무상태표)
+제목셀: 제목이 들어갈 셀 (선택사항)
+제목템플릿: 제목 형식, {year}와 {month} 사용 가능
+
+3. Excel 템플릿 준비
+경영실적보고서_템플릿.xlsx 파일을 미리 만들어 두세요:
+A1: [제목이 들어갈 위치]
+A3: 구분      B3: 당월금액    C3: 전년동월    D3: 증감액    E3: 증감률(%)
+A5: 매출액    B5: [값입력]    C5: [값입력]    D5: =B5-C5   E5: =D5/C5
+A6: 매출원가  B6: [값입력]    C6: [값입력]    D6: =B6-C6   E6: =D6/C6
+A7: 매출총이익 B7: =B5-B6     C7: =C5-C6     D7: =B7-C7   E7: =D7/C7
+중요:
+
+Python에서는 기초 데이터만 입력 (B5, B6, C5, C6)
+수식은 Excel에서 자동 계산 (=B5-B6, =D5/C5 등)
+서식, 색깔, 테두리 등은 템플릿에서 미리 설정
+
+
+🔧 시스템 실행
+1. 메인 코드 실행
+pythonpython main.py
+2. 메뉴 선택
+🏢 Excel 템플릿 기반 SAP 월마감 자동화
+==================================================
+계정매핑표 Excel 파일 경로: ./templates/계정과목매핑표.xlsx
+Excel 템플릿 폴더 경로: ./templates
+
+📋 메뉴:
+1. 당월 마감 처리
+2. 특정 월 마감 처리
+3. 기존 SAP 파일로 보고서 생성
+
+선택하세요 (1-3): 1
+3. 자동 실행 과정
+3-1. SAP GUI 자동화 (선택 1, 2인 경우)
+python# 시스템이 자동으로 실행하는 SAP 작업:
+sap_automation.enter_tcode("ZFB01")  # 시산표 트랜잭션
+sap_automation.find("[회사코드]").text = "1000"
+sap_automation.find("[회계연도]").text = "2024"
+sap_automation.find("[기간FROM]").text = "11"
+sap_automation.find("[기간TO]").text = "11"
+sap_automation.execute()  # F8 실행
+sap_automation.export_to_excel("시산표_2024_11.xlsx")
+3-2. 데이터 처리
+1. 시산표 로드: Excel 파일 읽기
+2. 계정매핑 적용: pandas merge로 vlookup 방식
+3. 계정별 집계: groupby로 합계 계산
+4. 전년 데이터 로드: 있는 경우 비교용
+3-3. Excel 보고서 생성
+1. 템플릿 복사: 서식 그대로 유지
+2. 셀매핑 적용: 계산된 값을 지정된 셀에 입력
+3. 제목 업데이트: 년월 정보 자동 입력
+4. 보고서 저장: 타임스탬프 포함한 파일명
+
+🎯 실행 시나리오별 가이드
+시나리오 1: 당월 마감 (메뉴 1)
+1. SAP GUI 자동 연결
+2. 현재 월-1의 시산표 다운로드
+3. 자동 처리 및 보고서 생성
+4. ./reports/경영실적보고서_2024년11월_20241115_143022.xlsx 생성
+시나리오 2: 특정 월 마감 (메뉴 2)
+년도: 2024
+월: 10
+
+1. 2024년 10월 시산표 다운로드
+2. 2023년 10월 데이터 찾아서 비교
+3. 보고서 생성
+시나리오 3: 기존 파일 활용 (메뉴 3)
+SAP 시산표 파일 경로: ./downloads/시산표_2024_11.xlsx
+년도: 2024
+월: 11
+
+1. 기존 파일 로드 (SAP 다운로드 스킵)
+2. 데이터 처리 및 보고서 생성
+
+🔧 SAP GUI 연동 세부 설정
+1. SAP 트랜잭션 설정
+python# main.py에서 SAP 자동화 연결
+from your_sap_automation import SAPAutomation
+
+def download_sap_data(self, year, month, download_folder):
+    """SAP에서 시산표 다운로드"""
+    logging.info(f"{year}년 {month}월 시산표 다운로드 시작")
+    
+    # ZFB01 트랜잭션 실행 (또는 회사의 시산표 트랜잭션)
+    self.sap_automation.enter_tcode("ZFB01")
+    
+    # 파라미터 설정 (실제 SAP 화면의 필드 ID에 맞게 조정)
+    self.sap_automation.find("wnd[0]/usr/ctxt회사코드").text = "1000"
+    self.sap_automation.find("wnd[0]/usr/ctxt회계연도").text = str(year)
+    self.sap_automation.find("wnd[0]/usr/ctxt기간FROM").text = f"{month:02d}"
+    self.sap_automation.find("wnd[0]/usr/ctxt기간TO").text = f"{month:02d}"
+    
+    # 실행
+    self.sap_automation.execute()
+    
+    # Excel 다운로드
+    filename = f"시산표_{year}_{month:02d}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+    filepath = os.path.join(download_folder, filename)
+    self.sap_automation.export_to_excel(filepath)
+    
+    return filepath
+2. SAP 필드 ID 확인 방법
+
+SAP GUI 스크립팅 녹화 사용
+F1 도움말에서 기술 정보 확인
+개발자 도구로 필드 ID 추출
+
+3. 회사별 커스터마이징 포인트
+python# 회사별로 수정이 필요한 부분:
+트랜잭션_코드 = "ZFB01"  # 또는 F.01, S_ALR_87012172 등
+회사코드 = "1000"        # 실제 회사코드
+필드_ID = {
+    "회사코드": "wnd[0]/usr/ctxt회사코드",
+    "회계연도": "wnd[0]/usr/ctxt회계연도", 
+    "기간FROM": "wnd[0]/usr/ctxt기간FROM",
+    "기간TO": "wnd[0]/usr/ctxt기간TO"
+}
+
+📝 문제 해결 가이드
+1. SAP 연결 오류
+오류: SAP GUI 창을 찾을 수 없습니다.
+해결: 
+1. SAP GUI가 실행되어 있는지 확인
+2. SAP에 로그인되어 있는지 확인
+3. 기존 SAP 자동화 모듈 동작 확인
+2. 매핑 오류
+오류: 매핑되지 않은 계정 15건 존재
+해결:
+1. 계정과목매핑표.xlsx에서 누락된 계정코드 추가
+2. SAP 시산표의 계정코드 형식 확인 (앞자리 0 등)
+3. 셀 입력 오류
+오류: 셀 입력 실패: 매출액 → B5
+해결:
+1. 셀매핑.xlsx에서 셀주소 확인 (B5 형식 맞는지)
+2. Excel 템플릿에 해당 시트가 있는지 확인
+3. 시트명이 정확히 일치하는지 확인
+4. 전년 데이터 없음
+경고: 전년 동월 데이터를 찾을 수 없습니다
+해결:
+1. downloads 폴더에 전년 파일이 있는지 확인
+2. 파일명 패턴이 일치하는지 확인
+3. 수동으로 전년 파일을 downloads 폴더에 복사
+
+🚀 고급 활용
+1. 스케줄러 연동
+python# Windows 작업 스케줄러 또는 cron으로 월말 자동 실행
+# 매월 말일 18:00에 자동 실행 설정
+2. 이메일 알림 추가
+pythondef send_completion_email(report_path):
+    """완료 알림 이메일 발송"""
+    # SMTP 설정 및 이메일 발송 로직
+    pass
+3. 여러 회사코드 일괄 처리
+pythoncompany_codes = ["1000", "2000", "3000"]
+for company_code in company_codes:
+    # 회사별로 순차 처리
+    pass
+4. 대시보드 연동
+python# Power BI, Tableau 등과 연동
+# 생성된 Excel 파일을 자동으로 대시보드 데이터소스로 업로드
+
+✅ 체크리스트
+최초 설정 시
+
+ 폴더 구조 생성
+ 기존 SAP 자동화 모듈 연결
+ 계정과목매핑표.xlsx 준비
+ 셀매핑.xlsx 생성 및 수정
+ Excel 템플릿 작성
+ SAP 필드 ID 확인 및 코드 수정
+
+매월 실행 시
+
+ SAP GUI 실행 및 로그인
+ 프로그램 실행
+ 결과 보고서 확인
+ 필요시 수동 조정
+ 백업 및 보관
+
+이제 완전한 SAP GUI 연동 월마감 자동화 시스템이 준비되었습니다! 🎉
