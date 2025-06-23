@@ -1,0 +1,131 @@
+{
+  "structure": {
+    "root": [
+      "[Content_Types].xml"
+    ],
+    "docProps": [
+      "app.xml",
+      "core.xml"
+    ],
+    "customUI": [
+      "customUI.xml"
+    ],
+    "customUI/images": [
+      "205.png",
+      "QUESTION.png",
+      "070.png",
+      "255.png",
+      "245.png",
+      "130.png",
+      "235.png"
+    ],
+    "customUI/_rels": [
+      "customUI.xml.rels"
+    ],
+    "_rels": [
+      ".rels"
+    ],
+    "xl": [
+      "workbook.xml",
+      "styles.xml",
+      "sharedStrings.xml",
+      "vbaProject.bin"
+    ],
+    "xl/worksheets": [
+      "sheet1.xml"
+    ],
+    "xl/worksheets/_rels": [
+      "sheet1.xml.rels"
+    ],
+    "xl/ctrlProps": [
+      "ctrlProp1.xml"
+    ],
+    "xl/drawings": [
+      "drawing1.xml",
+      "vmlDrawing1.vml"
+    ],
+    "xl/theme": [
+      "theme1.xml"
+    ],
+    "xl/_rels": [
+      "workbook.xml.rels"
+    ],
+    "xl/printerSettings": [
+      "printerSettings1.bin"
+    ]
+  },
+  "vba": {
+    "exists": true,
+    "size": 232960
+  },
+  "xml_files": {
+    "xl/workbook.xml": {
+      "root_tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}workbook",
+      "exists": true
+    },
+    "docProps/core.xml": {
+      "root_tag": "{http://schemas.openxmlformats.org/package/2006/metadata/core-properties}coreProperties",
+      "exists": true
+    },
+    "docProps/app.xml": {
+      "root_tag": "{http://schemas.openxmlformats.org/officeDocument/2006/extended-properties}Properties",
+      "exists": true
+    }
+  },
+  "relationships": {
+    "_rels/.rels": [
+      {
+        "id": "rId3",
+        "type": "extended-properties",
+        "target": "docProps/app.xml"
+      },
+      {
+        "id": "rId2",
+        "type": "core-properties",
+        "target": "docProps/core.xml"
+      },
+      {
+        "id": "rId1",
+        "type": "officeDocument",
+        "target": "xl/workbook.xml"
+      },
+      {
+        "id": "Rc7da95114edc4513",
+        "type": "extensibility",
+        "target": "customUI/customUI.xml"
+      }
+    ],
+    "xl/_rels/workbook.xml.rels": [
+      {
+        "id": "rId3",
+        "type": "styles",
+        "target": "styles.xml"
+      },
+      {
+        "id": "rId2",
+        "type": "theme",
+        "target": "theme/theme1.xml"
+      },
+      {
+        "id": "rId1",
+        "type": "worksheet",
+        "target": "worksheets/sheet1.xml"
+      },
+      {
+        "id": "rId5",
+        "type": "vbaProject",
+        "target": "vbaProject.bin"
+      },
+      {
+        "id": "rId4",
+        "type": "sharedStrings",
+        "target": "sharedStrings.xml"
+      }
+    ]
+  },
+  "features": [
+    "VBA 매크로 포함",
+    "Excel Add-in 형식",
+    "매크로 관계 정의"
+  ]
+}
