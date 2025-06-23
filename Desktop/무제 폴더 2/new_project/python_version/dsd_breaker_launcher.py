@@ -41,6 +41,29 @@ class DSDBreakerLauncher:
         version_frame = ttk.Frame(main_frame)
         version_frame.pack(fill=tk.X, pady=(0, 20))
         
+        # DSD Breaker 핵심 기능 (HTML → Excel 변환)
+        converter_frame = ttk.LabelFrame(version_frame, text="🔄 DSD Breaker 핵심 기능 (HTML → Excel 변환)", padding="15")
+        converter_frame.pack(fill=tk.X, pady=(0, 15))
+        
+        converter_desc = ttk.Label(converter_frame, text="""
+✨ 핵심 기능:
+• DART HTML 감사보고서 → Excel 파일 변환
+• 복수 HTML 파일 일괄 처리
+• 테이블별 시트 분리 옵션
+• 데이터 정리 및 숫자 자동 인식
+• 실시간 변환 진행 상황 표시
+
+🎯 적합한 사용자:
+• DART 감사보고서를 Excel로 변환해야 하는 사용자
+• HTML 테이블 데이터를 Excel로 옮기고 싶은 사용자
+• 원본 Excel Add-in 기능이 필요한 사용자
+        """, justify=tk.LEFT)
+        converter_desc.pack(anchor=tk.W)
+        
+        ttk.Button(converter_frame, text="🔄 HTML → Excel 변환기 실행", 
+                  command=self.launch_converter_version,
+                  style="Accent.TButton").pack(pady=(10, 0))
+        
         # 일반 데이터 분석 버전
         general_frame = ttk.LabelFrame(version_frame, text="📊 일반 데이터 분석 버전", padding="15")
         general_frame.pack(fill=tk.X, pady=(0, 15))
@@ -129,6 +152,38 @@ class DSDBreakerLauncher:
             return False
         
         return True
+    
+    def launch_converter_version(self):
+        """HTML → Excel 변환기 실행"""
+        if not self.check_dependencies():
+            return
+        
+        # xlsxwriter 체크
+        try:
+            import xlsxwriter
+        except ImportError:
+            messagebox.showerror("의존성 오류", 
+                "HTML → Excel 변환에는 xlsxwriter가 필요합니다:\\npip install xlsxwriter")
+            return
+        
+        try:
+            from dsd_breaker_converter import DSDHTMLToExcelConverter
+            
+            # 현재 창 숨기기
+            self.root.withdraw()
+            
+            # 변환기 실행
+            app = DSDHTMLToExcelConverter()
+            app.run()
+            
+            # 실행 완료 후 런처 창 다시 표시
+            self.root.deiconify()
+            
+        except ImportError as e:
+            messagebox.showerror("실행 오류", f"HTML → Excel 변환기를 찾을 수 없습니다:\\n{e}")
+        except Exception as e:
+            messagebox.showerror("실행 오류", f"예상치 못한 오류:\\n{e}")
+            self.root.deiconify()
     
     def launch_general_version(self):
         """일반 데이터 분석 버전 실행"""
